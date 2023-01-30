@@ -25,20 +25,20 @@ main()
   show_day_month=$(get_tmux_option "@dracula-day-month" false)
   show_refresh=$(get_tmux_option "@dracula-refresh-rate" 5)
   show_kubernetes_context_label=$(get_tmux_option "@dracula-kubernetes-context-label" "")
-  IFS=' ' read -r -a plugins <<< $(get_tmux_option "@dracula-plugins" "battery network weather")
+  IFS=' ' read -r -a plugins <<< $(get_tmux_option "@dracula-plugins" "")
 
   # Dracula Color Pallette
-  white='#f8f8f2'
-  gray='#44475a'
-  dark_gray='#282a36'
-  light_purple='#bd93f9'
-  dark_purple='#6272a4'
+  white='#d8dee9'
+  gray='default'
+  dark_gray='#2e3440'
+  light_purple='#88c0d0'
+  dark_purple='#88c0d0'
   cyan='#8be9fd'
-  green='#50fa7b'
+  green='#5e81ac'
   orange='#ffb86c'
   red='#ff5555'
   pink='#ff79c6'
-  yellow='#f1fa8c'
+  yellow='#bf616a'
 
   # Handle left icon configuration
   case $show_left_icon in
@@ -120,7 +120,7 @@ main()
     tmux set-option -g status-left "#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green},bg=${gray}]#{?client_prefix,#[fg=${yellow}],}${left_sep}"
     powerbg=${gray}
   else
-    tmux set-option -g status-left "#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon}"
+    tmux set-option -g status-left "#[fg=#4C566A]#{?client_prefix,#[bg=yellow],}#{?pane_in_mode,#[bg=green],} ${left_icon}"
   fi
 
   # Status right
@@ -144,12 +144,12 @@ main()
     fi
 
     if [ $plugin = "cpu-usage" ]; then
-      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-cpu-usage-colors" "orange dark_gray")
+      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-cpu-usage-colors" "gray white")
       script="#($current_dir/cpu_info.sh)"
     fi
 
     if [ $plugin = "ram-usage" ]; then
-      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-ram-usage-colors" "cyan dark_gray")
+      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-ram-usage-colors" "gray white")
       script="#($current_dir/ram_info.sh)"
     fi
 
@@ -191,15 +191,15 @@ main()
     fi
 
     if [ $plugin = "time" ]; then
-      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-time-colors" "dark_purple white")
+      IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-time-colors" "green dark_gray")
       if $show_day_month && $show_military ; then # military time and dd/mm
-        script="%a %d/%m %R ${timezone} "
+        script="%a %d/%m %R ${timezone}"
       elif $show_military; then # only military time
-        script="%a %m/%d %R ${timezone} "
+        script="%m-%d %R"
       elif $show_day_month; then # only dd/mm
-        script="%a %d/%m %I:%M %p ${timezone} "
+        script="%a %d/%m %I:%M %p ${timezone}"
       else
-        script="%a %m/%d %I:%M %p ${timezone} "
+        script="%a %m/%d %I:%M %p ${timezone}"
       fi
     fi
 
@@ -215,12 +215,13 @@ main()
   if $show_powerline; then
     tmux set-window-option -g window-status-current-format "#[fg=${gray},bg=${dark_purple}]${left_sep}#[fg=${white},bg=${dark_purple}] #I #W${current_flags} #[fg=${dark_purple},bg=${gray}]${left_sep}"
   else
-    tmux set-window-option -g window-status-current-format "#[fg=${white},bg=${dark_purple}] #I #W${current_flags} "
+    tmux set-window-option -g window-status-current-format "#[fg=${dark_gray},bg=${dark_purple}] #I #W${current_flags} "
   fi
 
-  tmux set-window-option -g window-status-format "#[fg=${white}]#[bg=${gray}] #I #W${flags}"
+  tmux set-window-option -g window-status-format "#[fg=${white}]#[bg=${gray}] #I #W${flags} "
   tmux set-window-option -g window-status-activity-style "bold"
   tmux set-window-option -g window-status-bell-style "bold"
+  tmux set-window-option -g window-status-separator ''
 }
 
 # run main function
